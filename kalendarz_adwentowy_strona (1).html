@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalendarz Adwentowy – Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(#ffefef, #ffeaea);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+    h1 {
+      color: #d62828;
+      margin-bottom: 10px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .day-box {
+      width: 90%;
+      max-width: 600px;
+      background: white;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .locked {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    button {
+      margin-top: 10px;
+      padding: 8px 14px;
+      border: none;
+      background: #d62828;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #a71c1c;
+    }
+    .password {
+      margin-top: 10px;
+      font-weight: bold;
+      color: green;
+    }
+
+    /* Falling snow */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: white;
+      font-size: 1.2em;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1>🎄 Adwentowy Quiz dla Ciebie ❤️</h1>
+  <p>Odpowiedz na pytanie dnia, aby dostać hasło (numer paczki) 🎁</p>
+
+  <script>
+    const dzis = new Date();
+
+    const dane = [
+      {dzien:1,pytanie:"Moje ulubione danie, które ze mną najczęściej jesz?",odp:"pizza",haslo:"Paczka 1"},
+      {dzien:2,pytanie:"Jakim pieszczotliwym określeniem najczęściej Cię nazywam?",odp:"kotku",haslo:"Paczka 2"},
+      {dzien:3,pytanie:"Nasze miejsce pierwszej randki?",odp:"kino",haslo:"Paczka 3"},
+      {dzien:4,pytanie:"Twój ulubiony słodycz?",odp:"czekolada",haslo:"Paczka 4"},
+      {dzien:5,pytanie:"Jaki jest Twój ulubiony kolor?",odp:"czerwony",haslo:"Paczka 5"},
+      {dzien:6,pytanie:"O której godzinie najczęściej piszemy do siebie rano?",odp:"7",haslo:"Paczka 6"},
+      {dzien:7,pytanie:"Jak nazywa się nasz ulubiony film?",odp:"titanic",haslo:"Paczka 7"},
+      {dzien:8,pytanie:"Co najczęściej pijesz zimą?",odp:"kakao",haslo:"Paczka 8"},
+      {dzien:9,pytanie:"Moje ulubione Twoje perfumy?",odp:"vanilla",haslo:"Paczka 9"},
+      {dzien:10,pytanie:"Jakie zwierzę najbardziej Cię rozczula?",odp:"kot",haslo:"Paczka 10"},
+      {dzien:11,pytanie:"Nasza ulubiona piosenka?",odp:"perfect",haslo:"Paczka 11"},
+      {dzien:12,pytanie:"Jak nazywa się miesiąc, w którym zaczęliśmy pisać?",odp:"maj",haslo:"Paczka 12"},
+      {dzien:13,pytanie:"Ulubiony świąteczny film?",odp:"kevin",haslo:"Paczka 13"},
+      {dzien:14,pytanie:"Twoje ulubione kwiaty?",odp:"roze",haslo:"Paczka 14"},
+      {dzien:15,pytanie:"Jak nazywa się nasze ulubione miejsce spacerów?",odp:"park",haslo:"Paczka 15"},
+      {dzien:16,pytanie:"Najlepszy napój gazowany?",odp:"cola",haslo:"Paczka 16"},
+      {dzien:17,pytanie:"Jaki sezon roku jest Twoim ulubionym?",odp:"zima",haslo:"Paczka 17"},
+      {dzien:18,pytanie:"Ulubiona część ciała, którą najczęściej Cię całuję?",odp:"czolo",haslo:"Paczka 18"},
+      {dzien:19,pytanie:"Twoje ulubione święto w roku?",odp:"boze narodzenie",haslo:"Paczka 19"},
+      {dzien:20,pytanie:"Jaki deser zamawiasz najczęściej?",odp:"lody",haslo:"Paczka 20"},
+      {dzien:21,pytanie:"Jakie zwierzątko chcielibyśmy kiedyś mieć?",odp:"pies",haslo:"Paczka 21"},
+      {dzien:22,pytanie:"Nasza pierwsza wspólna potrawa, którą przygotowaliśmy?",odp:"nalesniki",haslo:"Paczka 22"},
+      {dzien:23,pytanie:"Co zawsze poprawia Ci humor?",odp:"przytulas",haslo:"Paczka 23"},
+      {dzien:24,pytanie:"Co do Ciebie czuję? ❤️",odp:"milosc",haslo:"Paczka 24"}
+    ];
+
+    dane.forEach(d => {
+      const blok = document.createElement("div");
+      blok.className = "day-box";
+
+      const dzienDzis = dzis.getDate();
+      const miesiacDzis = dzis.getMonth() + 1;
+
+      let zablokowany = true;
+      if (miesiacDzis === 12 && dzienDzis >= d.dzien) {
+        zablokowany = false;
+      }
+
+      if (zablokowany) blok.classList.add("locked");
+
+      blok.innerHTML = `
+        <h2>✨ Dzień ${d.dzien}</h2>
+        <p>${zablokowany ? "Odblokuje się " + d.dzien + " grudnia 🎁" : d.pytanie}</p>
+        ${zablokowany ? "" : `
+          <input type='text' id='odp${d.dzien}' placeholder='Twoja odpowiedź' />
+          <button onclick='sprawdz(${d.dzien})'>Sprawdź</button>
+          <p id='wynik${d.dzien}' class='password'></p>
+        `}
+      `;
+
+      document.body.appendChild(blok);
+    });
+
+    function sprawdz(dzien) {
+      const wpis = document.getElementById("odp" + dzien).value.toLowerCase().trim();
+      const poprawna = dane.find(x => x.dzien === dzien).odp;
+      const wynik = document.getElementById("wynik" + dzien);
+
+      if (wpis === poprawna) {
+        wynik.textContent = dane.find(x => x.dzien === dzien).haslo + " 🎁";
+        wynik.style.color = "green";
+      } else {
+        wynik.textContent = "Niepoprawna odpowiedź ❌";
+        wynik.style.color = "red";
+      }
+    }
+
+    function snow() {
+      for (let i = 0; i < 15; i++) {
+        const s = document.createElement("div");
+        s.className = "snowflake";
+        s.textContent = "❄";
+        s.style.left = Math.random() * 100 + "%";
+        s.style.fontSize = (Math.random() * 15 + 10) + "px";
+        s.style.animationDuration = (Math.random() * 5 + 5) + "s";
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 10000);
+      }
+    }
+    setInterval(snow, 1000);
+  </script>
+</body>
+</html>
