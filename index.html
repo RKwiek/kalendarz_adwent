@@ -77,7 +77,12 @@
   <p>Odpowiedz na pytanie dnia, aby dostać hasło (numer paczki) 🎁</p>
 
   <script>
-    const dzis = new Date();
+    // Sprawdza parametr ?test=1 w URL
+    const params = new URLSearchParams(window.location.search);
+    const test = params.get('test');
+
+    // Jeśli test = 1 → ustawiamy grudzień i dzień 25, inaczej normalna data
+    const dzis = test ? new Date(2025, 11, 25) : new Date();
 
     const dane = [
       {dzien:1,pytanie:"Moje ulubione danie, które ze mną najczęściej jesz?",odp:"pizza",haslo:"Paczka 1"},
