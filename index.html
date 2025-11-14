@@ -175,14 +175,14 @@
     }
     function heart() {
       for (let i = 0; i < 15; i++) {
-        const s = document.createElement("div");
+        const h = document.createElement("div");
         s.className = "heart";
         s.textContent = "🩷";
         s.style.left = Math.random() * 100 + "%";
         s.style.fontSize = (Math.random() * 15 + 10) + "px";
         s.style.animationDuration = (Math.random() * 5 + 5) + "s";
-        document.body.appendChild(s);
-        setTimeout(() => s.remove(), 10000);
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 10000);
       }
     }
     setInterval(snow, 1000);
