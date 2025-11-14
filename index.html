@@ -75,6 +75,8 @@
 <body>
   <h1>🎄 Adwentowy Quiz dla Alicji ❤️</h1>
   <p>Odpowiedz na pytanie dnia, aby dostać hasło (numer paczki) 🎁</p>
+  <p>musisz probowac różnych kombinacji, dla ułatwienia wszystko z małych liter</p>
+  <p>PRZEPRASZAM za moje umiejętności pakowania</p>
 
   <script>
     // Sprawdza parametr ?test=1 w URL
@@ -87,28 +89,28 @@
     const dane = [
       {dzien:1,pytanie:"TWOJ Najlepszy napój gazowany?",odp:"cola zero",haslo:"Paczka 1602"},
       {dzien:2,pytanie:"Jakim pieszczotliwym określeniem najczęściej Cię nazywam?",odp:"żuczku",haslo:"Paczka 5100"},
-      {dzien:3,pytanie:"Nasze miejsce pierwszej randki?",odp:"kino",haslo:"Paczka 5118"},
-      {dzien:4,pytanie:"Twój ulubiony słodycz?",odp:"czekolada",haslo:"Paczka 0020"},
-      {dzien:5,pytanie:"Jaki jest Twój ulubiony kolor?",odp:"czerwony",haslo:"Paczka 0005"},
-      {dzien:6,pytanie:"O której godzinie najczęściej piszemy do siebie rano?",odp:"7",haslo:"Paczka 0006"},
-      {dzien:7,pytanie:"Jak nazywa się nasz ulubiony film?",odp:"titanic",haslo:"Paczka 1081"},
-      {dzien:8,pytanie:"Co najczęściej pijesz zimą?",odp:"kakao",haslo:"Paczka 0062"},
-      {dzien:9,pytanie:"Moje ulubione Twoje perfumy?",odp:"vanilla",haslo:"Paczka 0126"},
-      {dzien:10,pytanie:"Jakie zwierzę najbardziej Cię rozczula?",odp:"kot",haslo:"Paczka 6202"},
-      {dzien:11,pytanie:"Nasza ulubiona piosenka?",odp:"perfect",haslo:"Paczka 0621"},
-      {dzien:12,pytanie:"Jak nazywa się miesiąc, w którym zaczęliśmy pisać?",odp:"maj",haslo:"Paczka 1500"},
-      {dzien:13,pytanie:"Ulubiony świąteczny film?",odp:"kevin",haslo:"Paczka 2200"},
-      {dzien:14,pytanie:"Twoje ulubione kwiaty?",odp:"roze",haslo:"Paczka 2000"},
-      {dzien:15,pytanie:"Jak nazywa się nasze ulubione miejsce spacerów?",odp:"park",haslo:"Paczka 0660"},
+      {dzien:3,pytanie:"gdzie sie poznaliśmy?",odp:"szkoła muzyczna",haslo:"Paczka 5118"},
+      {dzien:4,pytanie:"jakiego psa chcesz kiedyś mieć?",odp:"parówa",haslo:"Paczka 0020"},
+      {dzien:5,pytanie:"jaki kolor oczu chciałabyś żeby miał twój chłopak?",odp:"niebieski",haslo:"Paczka 0005"},
+      {dzien:6,pytanie:"----------------",odp:"7",haslo:"Paczka 0006"},
+      {dzien:7,pytanie:"co to?( zaiebierzesz sobie w tym zimową herbatke do pracy i jest różowe?",odp:"termos",haslo:"Paczka 1081"},
+      {dzien:8,pytanie:"---------------",odp:"kakao",haslo:"Paczka 0062"},
+      {dzien:9,pytanie:"----------------",odp:"vanilla",haslo:"Paczka 0126"},
+      {dzien:10,pytanie:"",odp:"kot",haslo:"Paczka 6202"},
+      {dzien:11,pytanie:"co będziemy tańczyć podczas naszego 1 tańca? ... lub ... (wszytskie opcje)",odp:"tango lub walca",haslo:"Paczka 0621"},
+      {dzien:12,pytanie:"-----------------",odp:"maj",haslo:"Paczka 1500"},
+      {dzien:13,pytanie:"------------------",odp:"kevin",haslo:"Paczka 2200"},
+      {dzien:14,pytanie:"jakie kwaity najczęściej ode mnie dostajesz?",odp:"roze",haslo:"Paczka 2000"},
+      {dzien:15,pytanie:"Jak nazywa się nasze ulubione miejsce na rowery?",odp:"velodunajec",haslo:"Paczka 0660"},
       {dzien:16,pytanie:"Mój ulubiony fast food",odp:"burger",haslo:"Paczka 0221"},
-      {dzien:17,pytanie:"Jaki sezon roku jest Twoim ulubionym?",odp:"zima",haslo:"Paczka 2605"},
-      {dzien:18,pytanie:"Ulubiona część ciała, którą najczęściej Cię całuję?",odp:"czolo",haslo:"Paczka 2606"},
+      {dzien:17,pytanie:"------------------",odp:"zima",haslo:"Paczka 2605"},
+      {dzien:18,pytanie:"----------------",odp:"czolo",haslo:"Paczka 2606"},
       {dzien:19,pytanie:"Twoje ulubione święto w roku?",odp:"boze narodzenie",haslo:"Paczka 2502"},
-      {dzien:20,pytanie:"Jaki deser zamawiasz najczęściej?",odp:"lody",haslo:"Paczka 5020"},
+      {dzien:20,pytanie:"-----------------",odp:"lody",haslo:"Paczka 5020"},
       {dzien:21,pytanie:"Jakiego psa chce kiedyś mieć?",odp:"berneński",haslo:"Paczka 5022"},
-      {dzien:22,pytanie:"Nasza pierwsza wspólna potrawa, którą przygotowaliśmy?",odp:"nalesniki",haslo:"Paczka 0000"},
-      {dzien:23,pytanie:"Co zawsze poprawia Ci humor?",odp:"przytulas",haslo:"Paczka 1002"},
-      {dzien:24,pytanie:"Co do Ciebie czuję? ❤️",odp:"milosc",haslo:"Paczka 6605"}
+      {dzien:22,pytanie:"------------",odp:"nalesniki",haslo:"Paczka 0000"},
+      {dzien:23,pytanie:"Co zawsze poprawia Ci humor?",odp:"przytulanie",haslo:"Paczka 1002"},
+      {dzien:24,pytanie:"",odp:"milosc",haslo:"Paczka 6605"}
     ];
 
     dane.forEach(d => {
