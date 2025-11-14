@@ -175,12 +175,16 @@
       }
     }
     function heart() {
-      for (let i = 0; i < 15; i++) {
+      for (let i = 0; i < 10; i++) {
         const h = document.createElement("div");
         h.className = "heart";
         h.textContent = "🩷";
-        h.style.left = Math.random() * 100 + "%";
-        h.style.fontSize = (Math.random() * 15 + 10) + "px";
+        const strona = Math.random() < 0.5 ? "lewa" : "prawa";
+        if (strona === "lewa") {
+          h.style.left = Math.random() * 20 + "%";      // 0–25%
+        } else {
+          h.style.left = 75 + Math.random() * 25 + "%"; // 75–100%
+        }
         h.style.animationDuration = (Math.random() * 5 + 5) + "s";
         document.body.appendChild(h);
         setTimeout(() => h.remove(), 10000);
