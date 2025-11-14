@@ -66,6 +66,13 @@
       font-size: 1.2em;
       animation: fall linear infinite;
     }
+    .heart {
+      position: fixed;
+      top: -10px;
+      color: red;
+      font-size: 1.2em;
+      animation: fall linear infinite;
+    }
     @keyframes fall {
       0% { transform: translateY(0); opacity: 1; }
       100% { transform: translateY(100vh); opacity: 0; }
@@ -159,6 +166,17 @@
         const s = document.createElement("div");
         s.className = "snowflake";
         s.textContent = "❄";
+        s.style.left = Math.random() * 100 + "%";
+        s.style.fontSize = (Math.random() * 15 + 10) + "px";
+        s.style.animationDuration = (Math.random() * 5 + 5) + "s";
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 10000);
+      }
+      function heart() {
+      for (let i = 0; i < 15; i++) {
+        const s = document.createElement("div");
+        s.className = "heart";
+        s.textContent = "🩷";
         s.style.left = Math.random() * 100 + "%";
         s.style.fontSize = (Math.random() * 15 + 10) + "px";
         s.style.animationDuration = (Math.random() * 5 + 5) + "s";
