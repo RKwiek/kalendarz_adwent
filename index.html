@@ -1,244 +1,151 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kalendarz Adwentowy – Quiz</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(#ffefef, #ffeaea);
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      overflow-x: hidden;
-    }
-    h1 {
-      color: #d62828;
-      margin-bottom: 10px;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-    .day-box {
-      width: 90%;
-      max-width: 600px;
-      background: white;
-      padding: 20px;
-      margin: 15px 0;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.15);
-      position: relative;
-      overflow: hidden;
-    }
-    .locked {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-    button {
-      margin-top: 10px;
-      padding: 8px 14px;
-      border: none;
-      background: #d62828;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #a71c1c;
-    }
-    .password {
-      margin-top: 10px;
-      font-weight: bold;
-      color: green;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalendarz Adwentowy – Quiz</title>
+<style>
+body { font-family: Arial, sans-serif; background: linear-gradient(#ffefef,#ffeaea); margin:0; padding:20px; display:flex; flex-direction:column; align-items:center; overflow-x:hidden;}
+h1 { color:#d62828; margin-bottom:10px; animation:pulse 2s infinite; }
+@keyframes pulse { 0% { transform: scale(1);} 50% { transform: scale(1.05);} 100% { transform: scale(1);} }
+.day-box { width:90%; max-width:600px; background:white; padding:20px; margin:15px 0; border-radius:12px; box-shadow:0 0 15px rgba(0,0,0,0.15); position:relative; overflow:hidden;}
+.locked { opacity:0.5; pointer-events:none; }
+button { margin-top:10px; padding:8px 14px; border:none; background:#d62828; color:white; border-radius:6px; cursor:pointer; }
+button:hover { background:#a71c1c; }
+.password { margin-top:10px; font-weight:bold; color:green; }
+.rating { display:flex; gap:5px; font-size:26px; cursor:pointer; user-select:none; margin-top:10px; }
+.star { color:#ccc; transition:color 0.2s; }
+.star.selected { color:gold; }
+.star:hover, .star:hover ~ .star { color:#ccc; }
+.rating:hover .star { color:gold; }
+.rating .star:hover ~ .star { color:#ccc; }
 
-    /* Falling snow */
-    .snowflake {
-      position: fixed;
-      top: -10px;
-      color: white;
-      font-size: 1.2em;
-      animation: fall linear infinite;
-    }
-    @keyframes fall {
-      0% { transform: translateY(0); opacity: 1; }
-      100% { transform: translateY(100vh); opacity: 0; }
-    }
-
-    .rating {
-      display: flex;
-      gap: 5px;
-      font-size: 26px;
-      cursor: pointer;
-      user-select: none;
-      margin-top: 10px;
-    }
-    .star {
-      color: #ccc;
-      transition: color 0.2s;
-    }
-    .star:hover,
-    .star:hover ~ .star {
-      color: #ccc;
-    }
-    .rating:hover .star {
-      color: gold;
-    }
-    .rating .star:hover ~ .star {
-      color: #ccc;
-    }
-    .star.selected {
-      color: gold;
-    }
-  </style>
+/* Falling snow & hearts */
+.snowflake, .heart { position:fixed; top:-10px; font-size:1.2em; animation:fall linear infinite; pointer-events:none; }
+.snowflake { color:white; }
+.heart { color:red; filter:blur(1.1px);}
+@keyframes fall { 0% { transform:translateY(0); opacity:1;} 100% { transform:translateY(100vh); opacity:0;} }
+</style>
 </head>
 <body>
-  <h1>🎄 Adwentowy Quiz dla Alicji ❤️</h1>
-  <p>Odpowiedz na pytanie dnia, aby dostać hasło (numer paczki) 🎁</p>
-  <p>Musisz próbować różnych kombinacji, dla ułatwienia wszystko z małych liter</p>
-  <p>PRZEPRASZAM za moje umiejętności pakowania</p>
+<h1>🎄 Adwentowy Quiz dla Alicji ❤️</h1>
+<p>Odpowiedz na pytanie dnia, aby dostać hasło (numer paczki) 🎁</p>
+<p>Musisz próbować różnych kombinacji, wszystko z małych liter</p>
+<script>
+// KONFIGURACJA
+const sheetURL = "https://script.google.com/macros/s/AKfycbzaFTP1zEeXpCVd8JfwZYEi80a0K_4pmpsA8nwX85A_QGfmg4I6le4IWSRBVH770XQzOQ/exec"; // Twój Web App
+const params = new URLSearchParams(window.location.search);
+const test = params.get('test') === '1';
+const dzis = test ? new Date(2025, 11, 25) : new Date();
+let wybraneOceny = {};
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const test = params.get('test');
-    const dzis = test ? new Date(2025, 11, 25) : new Date();
+// DANE 24 DNI
+const dane = [
+{dzien:1,pytanie:"TWOJ Najlepszy napój gazowany?",odp:"cola zero",haslo:"Paczka 1602"},
+{dzien:2,pytanie:"Jakim pieszczotliwym określeniem najczęściej Cię nazywam?",odp:"żuczku",haslo:"Paczka 5100"},
+{dzien:3,pytanie:"Gdzie sie poznaliśmy?",odp:"szkoła muzyczna",haslo:"Paczka 5118"},
+{dzien:4,pytanie:"Jakiego psa chcesz kiedyś mieć?",odp:"parówa",haslo:"Paczka 0020"},
+{dzien:5,pytanie:"Jaki kolor oczu chciałabyś żeby miał twój chłopak?",odp:"niebieski",haslo:"Paczka 0005"},
+{dzien:6,pytanie:"Twoj ulubiony energetyk",odp:"redbull",haslo:"Paczka 0006"},
+{dzien:7,pytanie:"Co to?( zaiebierzesz sobie w tym zimową herbatke do pracy i jest różowe?",odp:"termos",haslo:"Paczka 1081"},
+{dzien:8,pytanie:"Kto się częściej denerwuje?(imię)",odp:"alicja",haslo:"Paczka 0062"},
+{dzien:9,pytanie:"Najlepsza jesienna słodkość",odp:"cynamonka",haslo:"Paczka 0126"},
+{dzien:10,pytanie:"W czym najlepiej według mnie wyglądasz?",odp:"bez niczego",haslo:"Paczka 6202"},
+{dzien:11,pytanie:"Co będziemy tańczyć podczas naszego 1 tańca? ... lub ... (wszytskie opcje)",odp:"tango lub walca",haslo:"Paczka 0621"},
+{dzien:12,pytanie:"Nasze najważniejsze wspomienie?",odp:"oświadczyny",haslo:"Paczka 1500"},
+{dzien:13,pytanie:"Jak się poznaliśmy co ci się we mnie najbardziej podobało?",odp:"nic",haslo:"Paczka 2200"},
+{dzien:14,pytanie:"Jakie kwiaty najczęściej ode mnie dostajesz?",odp:"róże",haslo:"Paczka 2000"},
+{dzien:15,pytanie:"Jak nazywa się nasze ulubione miejsce na rowery?",odp:"velodunajec",haslo:"Paczka 0660"},
+{dzien:16,pytanie:"Mój ulubiony fast food",odp:"burger",haslo:"Paczka 0221"},
+{dzien:17,pytanie:"Jaki projekt domu się nam podoba?",odp:"willa parkowa 9",haslo:"Paczka 2605"},
+{dzien:18,pytanie:"Czego nie lubisz na swojej twarzy?",odp:"pryszczy",haslo:"Paczka 2606"},
+{dzien:19,pytanie:"Twoje ulubione święto w roku?",odp:"boże narodzenie",haslo:"Paczka 2502"},
+{dzien:20,pytanie:"Co oboje lubimy gdy nam sie to robi?",odp:"drapanko",haslo:"Paczka 5020"},
+{dzien:21,pytanie:"Jakiego psa chce kiedyś mieć?",odp:"berneński",haslo:"Paczka 5022"},
+{dzien:22,pytanie:"Pamiętasz co Ci kiedyś dałem na walentynki?",odp:"naszyjnik",haslo:"Paczka 0000"},
+{dzien:23,pytanie:"Co zawsze poprawia Ci humor?",odp:"przytulanie",haslo:"Paczka 1002"},
+{dzien:24,pytanie:"Kim dla mnie jesteś?(... i ... ... ..)",odp:"narzeczoną i miłością mojego życia",haslo:"Paczka 6605"}
+];
 
-    const dane = [
-      {dzien:1,pytanie:"TWOJ Najlepszy napój gazowany?",odp:"cola zero",haslo:"Paczka 1602"}, 
-      {dzien:2,pytanie:"Jakim pieszczotliwym określeniem najczęściej Cię nazywam?",odp:"żuczku",haslo:"Paczka 5100"}, 
-      {dzien:3,pytanie:"Gdzie sie poznaliśmy?",odp:"szkoła muzyczna",haslo:"Paczka 5118"}, 
-      {dzien:4,pytanie:"Jakiego psa chcesz kiedyś mieć?",odp:"parówa",haslo:"Paczka 0020"}, 
-      {dzien:5,pytanie:"Jaki kolor oczu chciałabyś żeby miał twój chłopak?",odp:"niebieski",haslo:"Paczka 0005"}, 
-      {dzien:6,pytanie:"Twoj ulubiony energetyk",odp:"redbull",haslo:"Paczka 0006"}, 
-      {dzien:7,pytanie:"Co to?( zaiebierzesz sobie w tym zimową herbatke do pracy i jest różowe?",odp:"termos",haslo:"Paczka 1081"}, 
-      {dzien:8,pytanie:"Kto się częściej denerwuje?(imię)",odp:"alicja",haslo:"Paczka 0062"}, 
-      {dzien:9,pytanie:"Najlepsza jesienna słodkość",odp:"cynamonka",haslo:"Paczka 0126"}, 
-      {dzien:10,pytanie:"W czym najlepiej według mnie wyglądasz?",odp:"bez niczego",haslo:"Paczka 6202"}, 
-      {dzien:11,pytanie:"Co będziemy tańczyć podczas naszego 1 tańca? ... lub ... (wszytskie opcje)",odp:"tango lub walca",haslo:"Paczka 0621"}, 
-      {dzien:12,pytanie:"Nasze najważniejsze wspomienie?",odp:"oświadczyny",haslo:"Paczka 1500"}, 
-      {dzien:13,pytanie:"Jak się poznaliśmy co ci się we mnie najbardziej podobało?",odp:"nic",haslo:"Paczka 2200"}, 
-      {dzien:14,pytanie:"Jakie kwiaty najczęściej ode mnie dostajesz?",odp:"róże",haslo:"Paczka 2000"}, 
-      {dzien:15,pytanie:"Jak nazywa się nasze ulubione miejsce na rowery?",odp:"velodunajec",haslo:"Paczka 0660"}, 
-      {dzien:16,pytanie:"Mój ulubiony fast food",odp:"burger",haslo:"Paczka 0221"}, 
-      {dzien:17,pytanie:"Jaki projekt domu się nam podoba?",odp:"willa parkowa 9",haslo:"Paczka 2605"}, 
-      {dzien:18,pytanie:"Czego nie lubisz na swojej twarzy?",odp:"pryszczy",haslo:"Paczka 2606"}, 
-      {dzien:19,pytanie:"Twoje ulubione święto w roku?",odp:"boże narodzenie",haslo:"Paczka 2502"}, 
-      {dzien:20,pytanie:"Co oboje lubimy gdy nam sie to robi?",odp:"drapanko",haslo:"Paczka 5020"}, 
-      {dzien:21,pytanie:"Jakiego psa chce kiedyś mieć?",odp:"berneński",haslo:"Paczka 5022"}, 
-      {dzien:22,pytanie:"Pamiętasz co Ci kiedyś dałem na walentynki?",odp:"naszyjnik",haslo:"Paczka 0000 (wiem ze straci kolor ale bardzo ci sie podobał i chciałem zebys chwile mogła ponosić <3"}, 
-      {dzien:23,pytanie:"Co zawsze poprawia Ci humor?",odp:"przytulanie",haslo:"Paczka 1002"}, 
-      {dzien:24,pytanie:"Kim dla mnie jesteś?(... i ... ... ..)",odp:"narzeczoną i miłością mojego życia",haslo:"Paczka 6605"}
-    ];
+// GENEROWANIE DZIENNYCH BOXÓW
+dane.forEach(d=>{
+  const blok=document.createElement("div");
+  blok.className="day-box";
+  const dzienDzis=dzis.getDate();
+  const miesiacDzis=dzis.getMonth()+1;
+  let zablokowany = !(test || (miesiacDzis===12 && dzienDzis>=d.dzien));
+  if(zablokowany) blok.classList.add("locked");
+  blok.innerHTML=`<h2>✨ Dzień ${d.dzien}</h2>
+    <p>${zablokowany?"Odblokuje się "+d.dzien+" grudnia 🎁":d.pytanie}</p>
+    ${zablokowany?"":`
+      <input type='text' id='odp${d.dzien}' placeholder='Twoja odpowiedź' />
+      <button onclick='sprawdz(${d.dzien})'>Sprawdź</button>
+      <p id='wynik${d.dzien}' class='password'></p>
+      <p>Oceń prezent 🎁:</p>
+      <div class='rating' data-dzien='${d.dzien}'>
+        <span class='star' data-value='1'>★</span>
+        <span class='star' data-value='2'>★</span>
+        <span class='star' data-value='3'>★</span>
+        <span class='star' data-value='4'>★</span>
+        <span class='star' data-value='5'>★</span>
+      </div>
+      <button onclick='wyslijOcene(${d.dzien})'>Wyślij ocenę</button>
+      <p id='statusOcena${d.dzien}'></p>
+    `}
+  `;
+  document.body.appendChild(blok);
+});
 
-    let wybraneOceny = {};
+// SPRAWDZANIE ODPOWIEDZI
+function sprawdz(dzien){
+  const wpis=document.getElementById("odp"+dzien).value.toLowerCase().trim();
+  const poprawna=dane.find(x=>x.dzien===dzien).odp;
+  const wynik=document.getElementById("wynik"+dzien);
+  if(wpis===poprawna){wynik.textContent=dane.find(x=>x.dzien===dzien).haslo+" 🎁"; wynik.style.color="green";}
+  else{wynik.textContent="Niepoprawna odpowiedź ❌"; wynik.style.color="red";}
+}
 
-    dane.forEach(d => {
-      const blok = document.createElement("div");
-      blok.className = "day-box";
+// GWIAZDKI
+document.addEventListener("click",e=>{
+  if(e.target.classList.contains("star")){
+    const star=e.target; const value=star.dataset.value; const ratingDiv=star.parentElement; const dzien=ratingDiv.dataset.dzien;
+    wybraneOceny[dzien]=value;
+    [...ratingDiv.children].forEach(s=>s.classList.toggle("selected",s.dataset.value<=value));
+  }
+});
 
-      const dzienDzis = dzis.getDate();
-      const miesiacDzis = dzis.getMonth() + 1;
-
-      let zablokowany = !(miesiacDzis === 12 && dzienDzis >= d.dzien);
-      if (zablokowany) blok.classList.add("locked");
-
-      blok.innerHTML = `
-        <h2>✨ Dzień ${d.dzien}</h2>
-        <p>${zablokowany ? "Odblokuje się " + d.dzien + " grudnia 🎁" : d.pytanie}</p>
-        ${zablokowany ? "" : `
-          <input type='text' id='odp${d.dzien}' placeholder='Twoja odpowiedź' />
-          <button onclick='sprawdz(${d.dzien})'>Sprawdź</button>
-          <p id='wynik${d.dzien}' class='password'></p>
-          <p>Oceń prezent 🎁:</p>
-          <div class='rating' data-dzien='${d.dzien}'>
-            <span class='star' data-value='1'>★</span>
-            <span class='star' data-value='2'>★</span>
-            <span class='star' data-value='3'>★</span>
-            <span class='star' data-value='4'>★</span>
-            <span class='star' data-value='5'>★</span>
-          </div>
-          <button onclick='wyslijOcene(${d.dzien})'>Wyślij ocenę</button>
-          <p id='statusOcena${d.dzien}'></p>
-        `}
-      `;
-      document.body.appendChild(blok);
-    });
-
-    function sprawdz(dzien) {
-      const wpis = document.getElementById("odp" + dzien).value.toLowerCase().trim();
-      const poprawna = dane.find(x => x.dzien === dzien).odp;
-      const wynik = document.getElementById("wynik" + dzien);
-
-      if (wpis === poprawna) {
-        wynik.textContent = dane.find(x => x.dzien === dzien).haslo + " 🎁";
-        wynik.style.color = "green";
-      } else {
-        wynik.textContent = "Niepoprawna odpowiedź ❌";
-        wynik.style.color = "red";
-      }
+// JSONP - wysyłanie ocen
+function wyslijOcene(dzien){
+  const ocena=wybraneOceny[dzien];
+  const status=document.getElementById("statusOcena"+dzien);
+  if(!ocena){status.textContent="Najpierw wybierz gwiazdki ⭐!"; status.style.color="red"; return;}
+  const callbackName='jsonpCallback'+dzien;
+  window[callbackName]=function(data){
+    if(data.status==="OK"){
+      status.textContent="Ocena zapisana! ❤️";
+      document.querySelector(`.rating[data-dzien='${dzien}']`).style.pointerEvents="none";
     }
+  };
+  const script=document.createElement('script');
+  script.src=`${sheetURL}?dzien=${dzien}&ocena=${ocena}&callback=${callbackName}`;
+  document.body.appendChild(script);
+}
 
-    // Obsługa gwiazdek
-    document.addEventListener("click", e => {
-      if (e.target.classList.contains("star")) {
-        const star = e.target;
-        const value = star.dataset.value;
-        const ratingDiv = star.parentElement;
-        const dzien = ratingDiv.dataset.dzien;
-        wybraneOceny[dzien] = value;
-        [...ratingDiv.children].forEach(s => s.classList.toggle("selected", s.dataset.value <= value));
-      }
-    });
+// ANIMACJA ŚNIEGU I SERDECZEK
+function snowHeart() {
+  for(let i=0;i<10;i++){
+    const s=document.createElement('div');
+    s.className=Math.random()>0.8?'heart':'snowflake';
+    s.textContent=s.className==='heart'?'❤️':'❄';
+    s.style.left=Math.random()*100+'%';
+    s.style.fontSize=(Math.random()*15+10)+'px';
+    s.style.animationDuration=(Math.random()*5+5)+'s';
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),10000);
+  }
+}
+setInterval(snowHeart,1000);
 
-    function wyslijOcene(dzien) {
-      const ocena = wybraneOceny[dzien];
-      const status = document.getElementById("statusOcena" + dzien);
-      if (!ocena) {
-        status.textContent = "Najpierw wybierz liczbę gwiazdek ⭐!";
-        status.style.color = "red";
-        return;
-      }
-      const sheetURL = "https://script.google.com/macros/s/AKfycbzaFTP1zEeXpCVd8JfwZYEi80a0K_4pmpsA8nwX85A_QGfmg4I6le4IWSRBVH770XQzOQ/exec";
-      const url = `${sheetURL}?dzien=${dzien}&ocena=${ocena}`;
-
-      fetch(url)
-        .then(r => r.json())
-        .then(data => {
-          if (data.status === "OK") {
-            status.textContent = "Ocena zapisana! ❤️";
-            status.style.color = "green";
-            document.querySelector(`.rating[data-dzien='${dzien}']`).style.pointerEvents = "none";
-          } else {
-            status.textContent = "Błąd: " + data.message;
-            status.style.color = "red";
-          }
-        })
-        .catch(() => {
-          status.textContent = "Błąd — spróbuj ponownie 😢";
-          status.style.color = "red";
-        });
-    }
-
-    // Śnieg
-    function snow() {
-      for (let i = 0; i < 15; i++) {
-        const s = document.createElement("div");
-        s.className = "snowflake";
-        s.textContent = "❄";
-        s.style.left = Math.random() * 100 + "%";
-        s.style.fontSize = (Math.random() * 15 + 10) + "px";
-        s.style.animationDuration = (Math.random() * 5 + 5) + "s";
-        document.body.appendChild(s);
-        setTimeout(() => s.remove(), 10000);
-      }
-    }
-    setInterval(snow, 1000);
-  </script>
+</script>
 </body>
 </html>
