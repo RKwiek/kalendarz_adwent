@@ -78,6 +78,27 @@
       0% { transform: translateY(0); opacity: 1; }
       100% { transform: translateY(100vh); opacity: 0; }
     }
+
+    .rating {
+      display: flex;
+      gap: 5px;
+      font-size: 26px;
+      cursor: pointer;
+      user-select: none;
+      margin-top: 10px;
+    }
+    
+    .star {
+      color: #ccc;
+      transition: color 0.2s;
+    }
+    
+    .star.selected,
+    .star:hover,
+    .star:hover ~ .star {
+      color: gold;
+    }
+
   </style>
 </head>
 <body>
@@ -135,15 +156,27 @@
 
       if (zablokowany) blok.classList.add("locked");
 
-      blok.innerHTML = `
-        <h2>✨ Dzień ${d.dzien}</h2>
-        <p>${zablokowany ? "Odblokuje się " + d.dzien + " grudnia 🎁" : d.pytanie}</p>
-        ${zablokowany ? "" : `
-          <input type='text' id='odp${d.dzien}' placeholder='Twoja odpowiedź' />
-          <button onclick='sprawdz(${d.dzien})'>Sprawdź</button>
-          <p id='wynik${d.dzien}' class='password'></p>
+     blok.innerHTML = `
+      <h2>✨ Dzień ${d.dzien}</h2>
+      <p>${zablokowany ? "Odblokuje się " + d.dzien + " grudnia 🎁" : d.pytanie}</p>
+      ${zablokowany ? "" : `
+        <input type='text' id='odp${d.dzien}' placeholder='Twoja odpowiedź' />
+        <button onclick='sprawdz(${d.dzien})'>Sprawdź</button>
+        <p id='wynik${d.dzien}' class='password'></p>
+    
+        <p>Oceń prezent 🎁:</p>
+        <div class='rating' data-dzien='${d.dzien}'>
+          <span class='star' data-value='1'>★</span>
+          <span class='star' data-value='2'>★</span>
+          <span class='star' data-value='3'>★</span>
+          <span class='star' data-value='4'>★</span>
+          <span class='star' data-value='5'>★</span>
+        </div>
+        <button onclick='wyslijOcene(${d.dzien})'>Wyślij ocenę</button>
+        <p id='statusOcena${d.dzien}'></p>
         `}
-      `;
+    `;
+    
 
       document.body.appendChild(blok);
     });
@@ -174,24 +207,54 @@
         setTimeout(() => s.remove(), 10000);
       }
     }
-    /*function heart() {
-      for (let i = 0; i < 5; i++) {
-        const h = document.createElement("div");
-        h.className = "heart";
-        h.textContent = "🩷";
-        const strona = Math.random() < 0.5 ? "lewa" : "prawa";
-        if (strona === "lewa") {
-          h.style.left = Math.random() * 20 + "%";      // 0–25%
-        } else {
-          h.style.left = 75 + Math.random() * 25 + "%"; // 75–100%
-        }
-        h.style.animationDuration = (Math.random() * 5 + 5) + "s";
-        document.body.appendChild(h);
-        setTimeout(() => h.remove(), 10000);
-      }
-    }*/
+    
     setInterval(snow, 1000);
-    //setInterval(heart, 1500);
+    let wybraneOceny = {}; // przechowuje ocenę dla każdego dnia
+
+    document.addEventListener("click", e => {
+      if (e.target.classList.contains("star")) {
+        const star = e.target;
+        const value = star.dataset.value;
+        const ratingDiv = star.parentElement;
+        const dzien = ratingDiv.dataset.dzien;
+    
+        wybraneOceny[dzien] = value;
+    
+        // podświetlanie
+        [...ratingDiv.children].forEach(s => {
+          s.classList.toggle("selected", s.dataset.value <= value);
+        });
+      }
+    });
+
+    const sheetURL = "https://script.google.com/macros/s/AKfycbzaFTP1zEeXpCVd8JfwZYEi80a0K_4pmpsA8nwX85A_QGfmg4I6le4IWSRBVH770XQzOQ/exec"; 
+
+     function wyslijOcene(dzien) {
+      const ocena = wybraneOceny[dzien];
+      const status = document.getElementById("statusOcena" + dzien);
+    
+      if (!ocena) {
+        status.textContent = "Najpierw wybierz liczbę gwiazdek ⭐!";
+        status.style.color = "red";
+        return;
+      }
+    
+      fetch(sheetURL, {
+        method: "POST",
+        body: JSON.stringify({ dzien: dzien, ocena: ocena }),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(r => r.json())
+      .then(() => {
+        status.textContent = "Ocena zapisana! ❤️";
+        status.style.color = "green";
+      })
+      .catch(() => {
+        status.textContent = "Błąd — spróbuj ponownie 😢";
+        status.style.color = "red";
+      });
+    }
+
   </script>
 </body>
 </html>
