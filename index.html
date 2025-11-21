@@ -116,6 +116,25 @@ document.addEventListener("click",e=>{
     [...ratingDiv.children].forEach(s=>s.classList.toggle("selected",s.dataset.value<=value));
   }
 });
+  
+  function ocenyCallback(oceny) {
+  for (const dzien in oceny) {
+    const ratingDiv = document.querySelector(`.rating[data-dzien='${dzien}']`);
+    if (!ratingDiv) continue;
+    
+    const value = oceny[dzien];
+    [...ratingDiv.children].forEach(star => {
+      star.classList.toggle("selected", star.dataset.value <= value);
+    });
+    wybraneOceny[dzien] = value; // aktualizacja lokalnie
+  }
+}
+
+// Wywołanie podczas ładowania strony
+const script = document.createElement("script");
+script.src = "https://TWÓJ_WEB_APP/exec?callback=ocenyCallback";
+document.body.appendChild(script);
+
 
 // JSONP - wysyłanie ocen
 function wyslijOcene(dzien){
