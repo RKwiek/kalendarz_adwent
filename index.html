@@ -84,7 +84,7 @@ dane.forEach(d=>{
       <input type='text' id='odp${d.dzien}' placeholder='Twoja odpowiedź' />
       <button onclick='sprawdz(${d.dzien})'>Sprawdź</button>
       <p id='wynik${d.dzien}' class='password'></p>
-      <p class="ocen">Oceń prezent 🎁:</p>
+      <p class="ocen" data-dzien='${d.dzien}'>Oceń prezent 🎁:</p>
       <div class='rating' data-dzien='${d.dzien}'>
         <span class='star' data-value='1'>★</span>
         <span class='star' data-value='2'>★</span>
@@ -134,7 +134,8 @@ document.addEventListener("click",e=>{
 const script = document.createElement("script");
 script.src = "https://script.google.com/macros/s/AKfycbwOghPZn8QE1F2Cnrn8tdWf6Nxw3MpMQ5oiGR7iEeu9NnRs3RWSJIp97pneWrur3JJFQQ/exec?callback=ocenyCallback";
 document.body.appendChild(script);
-
+const ocenP = document.querySelector(`.ocen[data-dzien='${dzien}']`);
+if (ocenP) ocenP.textContent = "Już oceniony na:";
 
 // JSONP - wysyłanie ocen
 function wyslijOcene(dzien){
@@ -151,8 +152,6 @@ function wyslijOcene(dzien){
   const script=document.createElement('script');
   script.src=`${sheetURL}?dzien=${dzien}&ocena=${ocena}&callback=${callbackName}`;
   document.body.appendChild(script);
-  document.querySelectorAll(".ocen").forEach(p => {
-    p.textContent = "już oceniony na:";
 });
 
 }
