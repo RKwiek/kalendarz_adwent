@@ -117,16 +117,25 @@ document.addEventListener("click",e=>{
   }
 });
   
-  function ocenyCallback(oceny) {
+ function ocenyCallback(oceny) {
   for (const dzien in oceny) {
+
+    // Zaznaczenie gwiazdek
     const ratingDiv = document.querySelector(`.rating[data-dzien='${dzien}']`);
     if (!ratingDiv) continue;
-    
+
     const value = oceny[dzien];
     [...ratingDiv.children].forEach(star => {
       star.classList.toggle("selected", star.dataset.value <= value);
     });
-    wybraneOceny[dzien] = value; // aktualizacja lokalnie
+
+    wybraneOceny[dzien] = value;
+
+    // ⭐ TU DODAJEMY ZMIANĘ TEKSTU
+    const ocenP = document.querySelector(`.ocen[data-dzien='${dzien}']`);
+    if (ocenP) {
+      ocenP.textContent = "Już oceniony na:";
+    }
   }
 }
 
@@ -134,8 +143,6 @@ document.addEventListener("click",e=>{
 const script = document.createElement("script");
 script.src = "https://script.google.com/macros/s/AKfycbwOghPZn8QE1F2Cnrn8tdWf6Nxw3MpMQ5oiGR7iEeu9NnRs3RWSJIp97pneWrur3JJFQQ/exec?callback=ocenyCallback";
 document.body.appendChild(script);
-const ocenP = document.querySelector(`.ocen[data-dzien='${dzien}']`);
-if (ocenP) ocenP.textContent = "Już oceniony na:";
 
 // JSONP - wysyłanie ocen
 function wyslijOcene(dzien){
