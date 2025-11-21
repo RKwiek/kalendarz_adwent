@@ -84,7 +84,7 @@ dane.forEach(d=>{
       <input type='text' id='odp${d.dzien}' placeholder='Twoja odpowiedź' />
       <button onclick='sprawdz(${d.dzien})'>Sprawdź</button>
       <p id='wynik${d.dzien}' class='password'></p>
-      <p>Oceń prezent 🎁:</p>
+      <p class="ocen">Oceń prezent 🎁:</p>
       <div class='rating' data-dzien='${d.dzien}'>
         <span class='star' data-value='1'>★</span>
         <span class='star' data-value='2'>★</span>
@@ -151,6 +151,10 @@ function wyslijOcene(dzien){
   const script=document.createElement('script');
   script.src=`${sheetURL}?dzien=${dzien}&ocena=${ocena}&callback=${callbackName}`;
   document.body.appendChild(script);
+  document.querySelectorAll(".ocen").forEach(p => {
+    p.textContent = "już oceniony na:";
+});
+
 }
 
 // ANIMACJA ŚNIEGU I SERDECZEK
